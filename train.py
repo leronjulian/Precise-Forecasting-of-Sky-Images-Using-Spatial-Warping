@@ -9,27 +9,47 @@ from losses import *
 from skynet_Unet_model import *
 from dataLoader import *
 from torch.utils.data import DataLoader
+import argparse
 
-'''
-    ============ TO DO ==============
-    * Add part to save model after each 10 epochs
-    * Add arguments ? (GPU, hyperparameters, epochs, batchsize)
-    (DONE)* Add files for liteflownet (correlation, saved model)
-    * Change code to make it look like mine
-'''
 
-#HyperParameters##
-input_channels = 12
-output_channels = 3
-alpha = 1
-lam_int = 5.0
-lam_gd = 0.00111
-lam_op = 0.010
-device = torch.device("cuda:3" if torch.cuda.is_available() else "cpu") 
-EPOCHS = 40
-BATCH_SIZE = 8
-LR = 0.0002
-################
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--input_channels',
+                    default=12,
+                    type=np.int,
+                    help='(default value: %(default)s) Number of channels for input images. 3*NumOfImages')
+parser.add_argument('--output_channels',
+                    default=3,
+                    type=np.int,
+                    help='(default value: %(default)s) Number of channels for output images.')
+parser.add_argument('--lam_int',
+                    default=5.0,
+                    type=np.float32,
+                    help='(default value: %(default)s) Hyperparameter for intensity loss.')
+parser.add_argument('--lam_gd',
+                    default=0.00111,
+                    type=np.float32,
+                    help='(default value: %(default)s) Hyperparameter for gradient loss.')
+parser.add_argument('--lam_op',
+                    default=0.010,
+                    type=np.float32,
+                    help='(default value: %(default)s) Hyperparameter for optical flow loss.')
+parser.add_argument('--EPOCHS',
+                    default=40,
+                    type=np.int,
+                    help='(default value: %(default)s) Number of epochs o train model for.')
+parser.add_argument('--BATCH_SIZE',
+                    default=8,
+                    type=np.int,
+                    help='(default value: %(default)s) Training batch size.')
+parser.add_argument('--LR',
+                    default=0.0002,
+                    type=np.float32,
+                    help='(default value: %(default)s) learning rate.')
+
+args = parser.parse_args()
+
 
 #Model Paths#
 lite_flow_model_path='./network-sintel.pytorch'
@@ -38,6 +58,31 @@ INPUTS_PATH = "./xTrain_skip.h5"
 TARGET_PATH = "./yTrain_skip.h5"
 
 ##############################################
+
+
+# Models
+
+# Check GPUs
+devCount = torch.cuda.device_count()
+dev = torch.cuda.current_device()
+
+if devCount > 1:
+    dev = "cuda:" + str(devCount - 1)
+
+device = torch.device(dev if torch.cuda.is_available() else "cpu")
+#######
+
+
+# SkyNet UNet
+generator = SkyNet_UNet(args.input_channels, args.output_channels)
+
+generator = torch.nn.DataParallel(generator, device_ids=[devCount - 1, 0]) 
+generator = generator.to(device)
+
+# Optical Flow Network
+flow_network = Network()
+flow_network.load_state_dict(torch.load(lite_flow_model_path))
+flow_network.cuda().eval()
 
 
 #### Dataset Loader
@@ -67,7 +112,7 @@ def run_train(model, x, y, gd_loss, op_loss, int_loss, optimizer): # Add skip as
     g_int_loss = int_loss(G_output, target)
     g_gd_loss = gd_loss(G_output, target)
 
-    g_loss = lam_gd*g_gd_loss + lam_op*g_op_loss + lam_int*g_int_loss
+    g_loss = args.lam_gd*g_gd_loss + args.lam_op*g_op_loss + args.lam_int*g_int_loss
 
 
     optimizer.zero_grad()
@@ -78,21 +123,10 @@ def run_train(model, x, y, gd_loss, op_loss, int_loss, optimizer): # Add skip as
     return g_loss.item()
 
 
-# Unet Generator
-generator = SkyNet_UNet(input_channels, output_channels)
-
-
-generator = torch.nn.DataParallel(generator, device_ids=[3, 1]) 
-generator = generator.to(device)
-
-# Optical Flow Network
-flow_network = Network()
-flow_network.load_state_dict(torch.load(lite_flow_model_path))
-flow_network.cuda().eval()
 
 
 # Sochastic Gradient Descent Weight Updater
-optimizer = optim.Adam(generator.parameters(), lr = LR)
+optimizer = optim.Adam(generator.parameters(), lr = args.LR)
 
 
 # Training Loss
@@ -102,13 +136,13 @@ train_loss = []
 valid_loss = []
 
 # Losses
-gd_loss = Gradient_Loss(alpha, 3).to(device)
+gd_loss = Gradient_Loss(args.alpha, 3).to(device)
 op_loss = Flow_Loss().to(device)
 int_loss = Intensity_Loss(1).to(device)
 
 # Training Part ...
 num_images = 0
-for epoch in tqdm(range(EPOCHS), position = 0, leave = True):
+for epoch in tqdm(range(args.EPOCHS), position = 0, leave = True):
     print('Starting Epoch...', epoch + 1)
     
     trainLossCount = 0
@@ -138,9 +172,7 @@ for epoch in tqdm(range(EPOCHS), position = 0, leave = True):
 
 
         
-     
 
-        
 print('Training Complete...')
 
 PATH =  './finalModel.pt'

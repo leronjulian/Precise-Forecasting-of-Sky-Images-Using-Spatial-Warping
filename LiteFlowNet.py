@@ -16,9 +16,12 @@ except:
 
 assert(int(str('').join(torch.__version__.split('.')[0:3])) >= 41) # requires at least pytorch version 0.4.1
 
+devCount = torch.cuda.device_count()
+dev = torch.cuda.current_device()
 
-torch.device(3) # change this if you have a multiple graphics cards and you want to utilize them
-
+torch.device(dev)
+if devCount > 1:
+    torch.device(devCount - 1)
 
 Backward_tensorGrid = {}
 
