@@ -18,7 +18,7 @@ Installation using using anaconda package management
 # For info about command-line flags use
     python train.py --help
 
-# Running Tests
+# Running Tests (WORK-IN-PROGRESS)
     python test.py
 
 
