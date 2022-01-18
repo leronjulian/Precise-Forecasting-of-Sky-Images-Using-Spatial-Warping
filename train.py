@@ -11,7 +11,13 @@ from dataLoader import *
 from torch.utils.data import DataLoader
 import argparse
 
+'''
+    ### TO DO #####
 
+    1. Create command for exporting env
+    2. Make sure it works.
+    3. Finish README
+'''
 
 parser = argparse.ArgumentParser()
 
