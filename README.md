@@ -9,6 +9,7 @@ https://drive.google.com/drive/folders/1BkWx0j6Kt5G8CEMzzREprMeoYfw0v4ge?usp=sha
 Installation using using anaconda package management
 
 `conda env create -f environment.yml`
+
 `conda activate SkyNet`
 
 # How to train the model with default parameters:
