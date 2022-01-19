@@ -2,8 +2,10 @@
  SkyNet imrpoves sky-image prediction to model cloud dynamics with higher spatial and temporal resolution than previous works. Our method handles distorted clouds near the horizon of the hemispherical mirror by patially warping the sky images during training to facilitate longer forecasting of cloud evolution. 
 
 # To download dataset for train and test data:
+
+- `pip install gdown`
+- `gdown --folder --id 1BkWx0j6Kt5G8CEMzzREprMeoYfw0v4ge`
     
-https://drive.google.com/drive/folders/1BkWx0j6Kt5G8CEMzzREprMeoYfw0v4ge?usp=sharing
 # Installation
 
 Installation using using anaconda package management
@@ -20,6 +22,8 @@ Installation using using anaconda package management
 
 # Running Tests (WORK-IN-PROGRESS)
     python test.py
+
+# Citation
 
 
 
