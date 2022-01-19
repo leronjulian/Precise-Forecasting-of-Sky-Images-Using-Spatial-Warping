@@ -11,7 +11,9 @@ from dataLoader import *
 from torch.utils.data import DataLoader
 import argparse
 
-
+'''
+    Wrong version of python in skynet env
+'''
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--input_channels',
@@ -53,8 +55,8 @@ args = parser.parse_args()
 #Model Paths#
 lite_flow_model_path='./network-sintel.pytorch'
 
-INPUTS_PATH = "./xTrain_skip.h5"
-TARGET_PATH = "./yTrain_skip.h5"
+INPUTS_PATH = "./SkyNet_Data/xTrain_skip.h5"
+TARGET_PATH = "./SkyNet_Data/yTrain_skip.h5"
 
 ##############################################
 
