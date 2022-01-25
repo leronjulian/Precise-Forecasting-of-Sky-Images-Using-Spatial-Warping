@@ -23,6 +23,7 @@ torch.device(dev)
 if devCount > 1:
     torch.device(devCount - 1)
 
+
 Backward_tensorGrid = {}
 
 def Backward(tensorInput, tensorFlow):

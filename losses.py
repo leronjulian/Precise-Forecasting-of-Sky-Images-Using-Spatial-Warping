@@ -2,6 +2,16 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
+# Check GPUs
+devCount = torch.cuda.device_count()
+dev = torch.cuda.current_device()
+
+if devCount > 1:
+    dev = "cuda:" + str(devCount - 1)
+
+device = torch.device(dev if torch.cuda.is_available() else "cpu")
+
+
 
 class Flow_Loss(nn.Module):
     def __init__(self):

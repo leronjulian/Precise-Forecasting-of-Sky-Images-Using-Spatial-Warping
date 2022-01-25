@@ -11,9 +11,9 @@ from dataLoader import *
 from torch.utils.data import DataLoader
 import argparse
 
-'''
-    Wrong version of python in skynet env
-'''
+
+
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--input_channels',
@@ -74,6 +74,7 @@ device = torch.device(dev if torch.cuda.is_available() else "cpu")
 #######
 
 
+
 # SkyNet UNet
 generator = SkyNet_UNet(args.input_channels, args.output_channels)
 
@@ -87,7 +88,7 @@ flow_network.cuda().eval()
 
 
 #### Dataset Loader
-trainLoader = DataLoader(DatasetFromFolder(INPUTS_PATH, TARGET_PATH), BATCH_SIZE = 8, shuffle=True)
+trainLoader = DataLoader(DatasetFromFolder(INPUTS_PATH, TARGET_PATH), args.BATCH_SIZE, shuffle=True)
 
 # Trains model (on training data) and returns the training loss
 def run_train(model, x, y, gd_loss, op_loss, int_loss, optimizer): # Add skip as a parameter here
@@ -115,7 +116,6 @@ def run_train(model, x, y, gd_loss, op_loss, int_loss, optimizer): # Add skip as
 
     g_loss = args.lam_gd*g_gd_loss + args.lam_op*g_op_loss + args.lam_int*g_int_loss
 
-
     optimizer.zero_grad()
 
     g_loss.backward()
@@ -137,7 +137,7 @@ train_loss = []
 valid_loss = []
 
 # Losses
-gd_loss = Gradient_Loss(args.alpha, 3).to(device)
+gd_loss = Gradient_Loss(1, 3).to(device)
 op_loss = Flow_Loss().to(device)
 int_loss = Intensity_Loss(1).to(device)
 

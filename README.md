@@ -14,6 +14,8 @@ Installation using using anaconda package management
 
 - `conda activate SkyNet`
 
+- `pip install -r requirements.txt`
+
 # How to train the model with default parameters:
     python train.py
 
