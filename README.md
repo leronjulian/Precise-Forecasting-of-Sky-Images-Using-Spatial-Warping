@@ -33,15 +33,13 @@ Installation using using anaconda package management
          year = {2019},
          howpublished = {\url{https://github.com/sniklaus/pytorch-liteflownet}}
     }
-```
+
 [2]  @inproceedings{Hui_CVPR_2018,
          author = {Tak-Wai Hui and Xiaoou Tang and Chen Change Loy},
          title = {{LiteFlowNet}: A Lightweight Convolutional Neural Network for Optical Flow Estimation},
          booktitle = {IEEE Conference on Computer Vision and Pattern Recognition},
          year = {2018}
      }
-```
-```
 [3]  @inproceedings{ICCV_2021,
          author = {Leron Julian},
          title = {Precise Forecasting of Sky Images Using Spatial Warping},
