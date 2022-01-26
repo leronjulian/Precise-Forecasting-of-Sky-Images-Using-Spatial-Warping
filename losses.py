@@ -11,6 +11,10 @@ if devCount > 1:
 
 device = torch.device(dev if torch.cuda.is_available() else "cpu")
 
+torch.cuda.set_device(devCount - 1)
+
+# print(device)
+# input('...')
 
 
 class Flow_Loss(nn.Module):

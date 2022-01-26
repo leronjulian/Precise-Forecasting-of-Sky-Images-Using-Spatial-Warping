@@ -71,6 +71,9 @@ if devCount > 1:
     dev = "cuda:" + str(devCount - 1)
 
 device = torch.device(dev if torch.cuda.is_available() else "cpu")
+
+
+torch.cuda.set_device(devCount - 1)
 #######
 
 
@@ -112,6 +115,8 @@ def run_train(model, x, y, gd_loss, op_loss, int_loss, optimizer): # Add skip as
     
     g_op_loss = op_loss(flow_pred, flow_gt)
     g_int_loss = int_loss(G_output, target)
+    
+  
     g_gd_loss = gd_loss(G_output, target)
 
     g_loss = args.lam_gd*g_gd_loss + args.lam_op*g_op_loss + args.lam_int*g_int_loss
@@ -135,6 +140,7 @@ train_loss = []
 
 # Validation Loss 
 valid_loss = []
+
 
 # Losses
 gd_loss = Gradient_Loss(1, 3).to(device)

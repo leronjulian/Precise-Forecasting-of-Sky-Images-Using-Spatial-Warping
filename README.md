@@ -26,6 +26,12 @@ Installation using using anaconda package management
     python test.py
 
 # Citation
+[2]  @misc{pytorch-liteflownet,
+         author = {Simon Niklaus},
+         title = {A Reimplementation of {LiteFlowNet} Using {PyTorch}},
+         year = {2019},
+         howpublished = {\url{https://github.com/sniklaus/pytorch-liteflownet}}
+    }
 
 
 
